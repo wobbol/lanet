@@ -174,10 +174,9 @@ int main(void)
 
 	//calc z
 	ambpc(&weight_o,&act_h,&bias_o,&c);
-	//calc_activation
 
+	//calc_activation
 	mf_apply(&c,sigmoid);
-	//print
 
 	print_fmatrix(&c);
 
