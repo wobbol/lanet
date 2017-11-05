@@ -7,9 +7,14 @@
 #include <math.h>
 #include <cblas.h>
 
+struct matrix;
+struct layer;
+struct net;
+
 struct matrix
 {
 	char *name;
+	const struct layer *from;
 	int height;
 	int width;
 	CBLAS_TRANSPOSE t;
@@ -39,6 +44,8 @@ struct net
 
 void print_fmatrix(const struct matrix *const c)
 {
+		if(c->from && c->from->name)
+			printf("l_name: %s\n",c->from->name);
 		if(c->name)
 			printf("m_name: %s\n",c->name);
 	for(int i = 0; i < c->height; ++i){
@@ -218,12 +225,14 @@ struct matrix *const ret,
 const int height,
 const int width,
 float(*gen)(void),
+const struct layer *from,
 const char *const name)
 {
 	char *str = malloc(strlen(name)+1);
 	strcpy(str,name);
 	ret->name = str;
 
+	ret->from = from;
 	ret->height = height;
 	ret->width = width;
 	ret->t = CblasNoTrans;
@@ -244,25 +253,25 @@ struct layer *const in) // requires NULL if input layer.
 
 	ret->length = length;
 
-	init_matrix(&ret->z,length,1,gen_zero,"weighted sum");
-	init_matrix(&ret->act,length,1,gen_one,"act");
+	init_matrix(&ret->z,length,1,gen_zero,ret,"weighted sum");
+	init_matrix(&ret->act,length,1,gen_one,ret,"act");
 
 	if(in){ // first layer does not need weights or biases.
 		init_matrix(&ret->weight,
 		length, in->act.height,
-		gen_rand, "weight");
+		gen_one,ret, "weight");
 
 		init_matrix(&ret->bias,
 		length,1,
-		gen_rand,"bias");
+		gen_one,ret,"bias");
 
 		init_matrix(&ret->weight_error,
 		length,in->act.height,
-		gen_zero,"weight_error");
+		gen_zero,ret,"weight_error");
 
 		init_matrix(&ret->bias_error,
 		length,1,
-		gen_zero,"bias_error");
+		gen_zero,ret,"bias_error");
 	}
 
 	// link the list in both directions.
@@ -293,7 +302,7 @@ void calc_net(struct net *const n)
 {
 	struct layer *layer_p = n->top;
 	struct matrix tmp;
-	init_matrix(&tmp,2,1,gen_zero,"tmp");
+	init_matrix(&tmp,2,1,gen_zero,calc_tmp,"tmp");
 	while(layer_p->in)
 		layer_p = layer_p->in;
 	layer_p = layer_p->out;
