@@ -140,7 +140,7 @@ struct matrix *const out)
 
 	int rows_a_c = a->height;
 	int cols_b_c = b->width;
-	int cols_a_rows_b = b->width;
+	int cols_a_rows_b = b->height;
 
 	int lda= a->width;
 	int ldb= b->width;
@@ -154,7 +154,7 @@ struct matrix *const out)
                  1,
 		 a->d, lda,
 		 b->d, ldb,
-		 1,
+		-1,
 		 out->d, ldc);
 }
 
