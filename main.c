@@ -309,15 +309,15 @@ void calc_net(struct net *const n)
 	&layer_p->in->act,
 	&layer_p->z,
 	&tmp);
-	print_fmatrix(&tmp);
-
 
 }
 
-void get_input_layer(struct layer *l)
+const struct layer *get_input_layer(const struct layer *l)
 {
-	while(l->in)
-		l = l->in;
+	const struct layer *ret = l;
+	while(ret->in)
+		ret = ret->in;
+	return ret;
 }
 
 void print_net_out(const struct net *const n)
@@ -329,7 +329,11 @@ int main(void)
 	srand(34);
 	int spec[]={4,2};
 	struct net *n = init_network(spec,2);
+
+	print_net(n);
 	calc_net(n);
+	print_net(n);
+
 
 
 	////calc z
