@@ -62,12 +62,19 @@ int print_layer(const struct layer *const l)
 	printf("num: %d\n", l->length);
 	print_fmatrix(&l->weight);
 	print_fmatrix(&l->bias);
-	print_fmatrix(&l->weight_error);
-	print_fmatrix(&l->bias_error);
-	print_fmatrix(&l->z);
 	print_fmatrix(&l->act);
 	return l->in ? 1:0;
 
+}
+
+int print_layer_debug(const struct layer *const l)
+{
+	int ret = print_layer(l);
+
+	print_fmatrix(&l->weight_error);
+	print_fmatrix(&l->bias_error);
+	print_fmatrix(&l->z);
+	return ret;
 }
 
 void print_net(const struct net *const n)
