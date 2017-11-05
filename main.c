@@ -140,11 +140,9 @@ struct matrix *const out)
 	int ldc= c->width;
 
 	CBLAS_LAYOUT layout = CblasRowMajor;
-	CBLAS_TRANSPOSE trans_a = a->t;
-	CBLAS_TRANSPOSE trans_b = b->t;
 
 	//assert(weight_h.width == act_in.height)
-	cblas_sgemm(layout, trans_a, trans_b,
+	cblas_sgemm(layout, a->t, b->t,
 		rows_a_c, cols_b_c, cols_a_rows_b,
                  1,
 		 a->d, lda,
