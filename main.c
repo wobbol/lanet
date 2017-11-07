@@ -146,10 +146,7 @@ struct matrix *const out)
 	int ldb= b->width;
 	int ldc= c->width;
 
-	CBLAS_LAYOUT layout = CblasRowMajor;
-
-	//assert(weight_h.width == act_in.height)
-	cblas_sgemm(layout, a->t, b->t,
+	cblas_sgemm(CblasRowMajor, a->t, b->t,
 		rows_a_c, cols_b_c, cols_a_rows_b,
                  1,
 		 a->d, lda,
@@ -259,16 +256,16 @@ struct layer *const in) // requires NULL if input layer.
 	ret->length = length;
 
 	init_matrix(&ret->z,length,1,gen_zero,ret,"weighted sum");
-	init_matrix(&ret->act,length,1,gen_one,ret,"act");
+	init_matrix(&ret->act,length,1,gen_rand,ret,"act");
 
 	if(in){ // first layer does not need weights or biases.
 		init_matrix(&ret->weight,
 		length, in->act.height,
-		gen_one,ret, "weight");
+		gen_rand,ret, "weight");
 
 		init_matrix(&ret->bias,
 		length,1,
-		gen_one,ret,"bias");
+		gen_zero,ret,"bias");
 
 		init_matrix(&ret->weight_error,
 		length,in->act.height,
@@ -314,8 +311,9 @@ void calc_net(struct net *const n)
 	ambpc(
 	&layer_p->weight,
 	&layer_p->in->act,
-	&layer_p->z,
+	&layer_p->bias,
 	&tmp);
+	print_fmatrix(&tmp);
 
 }
 
