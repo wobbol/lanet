@@ -137,7 +137,6 @@ struct matrix *const out)
 	assert(out->height == a->height);
 	assert(out->width == b->width);
 
-
 	int rows_a_c = a->height;
 	int cols_b_c = b->width;
 	int cols_a_rows_b = b->height;
