@@ -1,2 +1,2 @@
-A simple neural network with hardcoded values for weights, bias and input.
+A neural net implimentation using cblas, now with pancakes.
 Meant to be played with. Handle with care :)
